@@ -1,22 +1,34 @@
+import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.wait import WebDriverWait
+# from selenium.webdriver.support.wait import WebDriverWait
 
 
-def login(username, password, driver, wait_time = 2):
+def login(username, password, driver, wait_time = 3):
     """Logs into Facebook using .env creds"""
     email_elem = driver.find_element(By.ID, "email") 
     email_elem.send_keys(username)
     password_elem = driver.find_element(By.ID, "pass") 
     password_elem.send_keys(password)
     password_elem.send_keys(Keys.RETURN)
-    driver.implicitly_wait(wait_time)
+    time.sleep(wait_time)
 
 
-def change_url(driver, url):
-    """Changes the URL and waits for the page to properly load"""
-    driver.get(url)
-    page_title = driver.find_element(By.XPATH, '''//a[@href="'+url+'"]''')
+def change_url(driver, link, delay_time = 3):
+    """Change the URL with a timer to suspend the thread"""
+    driver.get(link)
+    time.sleep(delay_time)
 
-    wait = WebDriverWait(driver, timeout=2)
-    wait.until(lambda d : page_title.is_displayed())
+
+def sort_by_newest(driver, delay_time = 1):
+    driver.find_elements(By.XPATH, '''//div[contains(@class, 'xu06os2 x1ok221b')]''')[2].click()
+    time.sleep(delay_time)
+    driver.find_elements(By.XPATH, '''//div[contains(@class, 'x78zum5 xdt5ytf xz62fqu x16ldp7u')]''')[-2].click()
+    time.sleep(delay_time)
+
+
+def scroll_to_bottom(driver, num_scrolls, delay_time = 3):
+    """Scroll to the bottom of the page 'n' times"""
+    for _ in range(num_scrolls):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+        time.sleep(delay_time)

@@ -8,12 +8,14 @@ from selenium.webdriver.support import expected_conditions as EC
 
 load_dotenv()
 options = webdriver.ChromeOptions()
-prefs = {"profile.default_content_setting_values.notifications": 2}
-options.add_experimental_option("prefs", prefs)
+options.add_argument("--disable-notifications")
+# prefs = {"profile.default_content_setting_values.notifications": 2}
+# options.add_experimental_option("prefs", prefs)
 # options.add_argument("--user-data-dir=C:\\Users\\carlw\\AppData\\Local\\Google\\Chrome\\User Data")
 # options.add_argument(r"--profile-directory=Default")
 
 driver = webdriver.Chrome(options=options)
+driver.maximize_window()
 FACEBOOK_USERNAME = os.getenv("FACEBOOK_USERNAME")
 FACEBOOK_PASSWORD = os.getenv("FACEBOOK_PASSWORD")
 
@@ -26,18 +28,21 @@ FB_GROUP_URLS = [
     "https://www.facebook.com/groups/WaterlooSublet/",
 ]
 
+
 # https://medium.com/elnkart/facebook-login-using-selenium-python-bd28d2cb3740
 def main():
-    print(1)
     driver.get("https://www.facebook.com/")
-    login(FACEBOOK_USERNAME, FACEBOOK_PASSWORD, driver, 5)
+    login(FACEBOOK_USERNAME, FACEBOOK_PASSWORD, driver)
     
     # TODO: Set up proper wait times
     for link in FB_GROUP_URLS:
-        driver.get(link)
-        driver.find_elements(By.XPATH, '''//div[contains(@class, 'xu06os2 x1ok221b')]''')[2].click()
-        driver.find_elements(By.XPATH, '''//div[contains(@class, 'x78zum5 xdt5ytf xz62fqu x16ldp7u')]''')[-2].click()
-        time.sleep(120)
+        change_url(driver, link)
+        sort_by_newest(driver)
+        scroll_to_bottom(driver, 5)
+
+        feed = driver.find_element(By.CSS_SELECTOR, '''div[role="feed"]''').get_attribute("innerHTML")
+        print(feed)
+        print("======================")
 
 
 if __name__ == "__main__":
