@@ -3,8 +3,7 @@ import os, time
 from selenium import webdriver
 from dotenv import load_dotenv
 from FacebookScraper import *
-from selenium.webdriver.support import expected_conditions as EC
-
+from bs4 import BeautifulSoup
 
 load_dotenv()
 options = webdriver.ChromeOptions()
@@ -41,7 +40,10 @@ def main():
         scroll_to_bottom(driver, 5)
 
         feed = driver.find_element(By.CSS_SELECTOR, '''div[role="feed"]''').get_attribute("innerHTML")
-        print(feed)
+        soup = BeautifulSoup(feed, "html.parser")
+        texts = soup.findAll(string=True)
+        texts = filter_bs4_texts(texts)
+        print(texts)
         print("======================")
 
 

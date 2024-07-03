@@ -32,3 +32,33 @@ def scroll_to_bottom(driver, num_scrolls, delay_time = 3):
     for _ in range(num_scrolls):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
         time.sleep(delay_time)
+
+
+def filter_bs4_texts(list: list[str]):
+    common_keywords = [
+        "Facebook",
+        "All reactions:",
+        "Comment",
+        "Like",
+        "View more comments",
+        " ",
+        " · ",
+        "\xa0",
+        "Like",
+        "See more",
+        "Write a public comment…",
+        "New listings",
+        "sort group feed by",
+        "Shared with Public group",
+        "Shared with Private group",
+        "Message",
+        "Reply",
+        "Write a comment…",
+        "Moderator",
+        "Top contributor",
+    ]
+
+    # Get a sample output copied and manually process that
+    filtered_list = [text for text in list if text not in common_keywords]
+
+    return filtered_list
