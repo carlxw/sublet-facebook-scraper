@@ -15,11 +15,11 @@ driver.maximize_window()
 
 
 FB_GROUP_URLS = [
-    {"Rez One/ICON - Student Housing In Waterloo": "https://www.facebook.com/groups/3428997217345482/"},
-    {"Student Housing in Waterloo": "https://www.facebook.com/groups/1998166543836067/"},
-    {"Rez-One sublets - Student Housing Waterloo": "https://www.facebook.com/groups/855632539122696/"},
-    {"Waterloo Student Housing": "https://www.facebook.com/groups/664699027351008/"},
-    {"UW/WLU 4 Month Subletting": "https://www.facebook.com/groups/WaterlooSublet/"},
+    {"Rez One/ICON - Student Housing In Waterloo": ["https://www.facebook.com/groups/3428997217345482/"]},
+    # {"Student Housing in Waterloo": ["https://www.facebook.com/groups/1998166543836067/"]},
+    # {"Rez-One sublets - Student Housing Waterloo": ["https://www.facebook.com/groups/855632539122696/"]},
+    # {"Waterloo Student Housing": ["https://www.facebook.com/groups/664699027351008/"]},
+    # {"UW/WLU 4 Month Subletting": ["https://www.facebook.com/groups/WaterlooSublet/"]},
 ]
 
 
@@ -36,67 +36,40 @@ CHART_DATA = {
 }
 
 
-NUMBER_OF_SCROLLS = 10
+NUMBER_OF_SCROLLS = 1
 
 
 # https://medium.com/elnkart/facebook-login-using-selenium-python-bd28d2cb3740
-def main():
-    driver.get("https://www.facebook.com/")
-    
+def main():  
     for url_entry in FB_GROUP_URLS:
         for group_name, link in url_entry.items():
-            # Process Buy and Sell Page
-            change_url(driver, link)
-            sort_by_newest(driver)
-            scroll_to_bottom(driver, NUMBER_OF_SCROLLS)
+            # Add corresponding URL leading to discussions page
+            url_entry[group_name].append(f"{link[0]}buy_sell_discussion/")
+            for url in link:
+                isBuyAndSell = False if "buy_sell_discussion" in url else True
+                change_url(driver, f"{url}?sorting_setting=CHRONOLOGICAL_LISTINGS" if isBuyAndSell else url)
+                scroll_to_bottom(driver, NUMBER_OF_SCROLLS)
 
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-            posts = soup.findAll("div", {"class": FEED_CLASS})
-            names, contents = [], []
-            for post in posts:
-                name = post.find("span", {"class": NAME_CLASS})
-                content = post.find("span", {"class": CONTENT_CLASS})
-                if content is not None and name is not None: 
-                    names.append(name.findAll(string=True))
-                    contents.append(content.findAll(string=True))
-
-            if len(names) != len(contents):
-                delta = len(names) - len(contents)
-                if abs(delta) == 1:
-                    if delta > 0:
-                        names.pop()
+                soup = BeautifulSoup(driver.page_source, "html.parser")
+                posts = soup.findAll("div", {"class": FEED_CLASS})
+                names, contents = [], []
+                filter_list = [None, " "]
+                for post in posts:
+                    name = post.find("span", {"class": NAME_CLASS})
+                    if name is not None:
+                        name = name.findAll(string=True)
+                    content = post.find("span", {"class": CONTENT_CLASS})
+                    if content is not None:
+                        content = content.findAll(string=True)
+                    if content not in filter_list and name not in filter_list: 
+                        names.append(name)
+                        contents.append(content)
                     else:
-                        contents.pop()
-                else:
-                    raise Exception("A mismatch occured")
-
-            add_to_data(names, contents, CHART_DATA, "Buy and Sell", group_name)
-            
-            # Process Discussions
-            change_url(driver, f"{link}buy_sell_discussion/")
-            sort_by_newest(driver)
-            scroll_to_bottom(driver, NUMBER_OF_SCROLLS)
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-            posts = soup.findAll("div", {"class": FEED_CLASS})
-            names, contents = [], []
-            for post in posts:
-                name = post.find("span", {"class": NAME_CLASS})
-                content = post.find("span", {"class": CONTENT_CLASS})
-                if content is not None and name is not None: 
-                    names.append(name.findAll(string=True))
-                    contents.append(content.findAll(string=True))
-
-            if len(names) != len(contents):
-                delta = len(names) - len(contents)
-                if abs(delta) == 1:
-                    if delta > 0:
-                        names.pop()
-                    else:
-                        contents.pop()
-                else:
-                    raise Exception("A mismatch occured")
-
-        add_to_data(names, contents, CHART_DATA, "Discussions", group_name)
+                        if content not in filter_list and name in filter_list:
+                            names.append("UNKNOWN")
+                            contents.append(content)
+                category = "Buy and Sell" if isBuyAndSell else "Discussion"
+                add_to_data(names, contents, CHART_DATA, category, group_name)
 
     # Write the data to an Excel Spreadsheet
     # https://stackoverflow.com/questions/13437727/how-to-write-to-an-excel-spreadsheet-using-python

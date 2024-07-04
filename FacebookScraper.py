@@ -8,13 +8,6 @@ def change_url(driver, link, delay_time = 3):
     time.sleep(delay_time)
 
 
-def sort_by_newest(driver, delay_time = 1):
-    driver.find_elements(By.XPATH, '''//div[contains(@class, 'xu06os2 x1ok221b')]''')[2].click()
-    time.sleep(delay_time)
-    driver.find_elements(By.XPATH, '''//div[contains(@class, 'x78zum5 xdt5ytf xz62fqu x16ldp7u')]''')[-2].click()
-    time.sleep(delay_time)
-
-
 def scroll_to_bottom(driver, num_scrolls, delay_time = 3):
     """Scroll to the bottom of the page 'n' times"""
     for _ in range(num_scrolls):
@@ -27,7 +20,7 @@ def add_to_data(names, contents, data, category, group_name):
     for i in range(len(names)):
         content_text = ""
         for entry in contents[i]:
-            content_text += entry + "\n"
+            content_text += entry + " \\ "
         data_entry = {
             "name": names[i][0],
             "group_name": group_name,
