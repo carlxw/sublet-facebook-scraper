@@ -1,17 +1,5 @@
 import time
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.support.wait import WebDriverWait
-
-
-def login(username, password, driver, wait_time = 3):
-    """Logs into Facebook using .env creds"""
-    email_elem = driver.find_element(By.ID, "email") 
-    email_elem.send_keys(username)
-    password_elem = driver.find_element(By.ID, "pass") 
-    password_elem.send_keys(password)
-    password_elem.send_keys(Keys.RETURN)
-    time.sleep(wait_time)
 
 
 def change_url(driver, link, delay_time = 3):
@@ -34,31 +22,19 @@ def scroll_to_bottom(driver, num_scrolls, delay_time = 3):
         time.sleep(delay_time)
 
 
-def filter_bs4_texts(list: list[str]):
-    common_keywords = [
-        "Facebook",
-        "All reactions:",
-        "Comment",
-        "Like",
-        "View more comments",
-        " ",
-        " · ",
-        "\xa0",
-        "Like",
-        "See more",
-        "Write a public comment…",
-        "New listings",
-        "sort group feed by",
-        "Shared with Public group",
-        "Shared with Private group",
-        "Message",
-        "Reply",
-        "Write a comment…",
-        "Moderator",
-        "Top contributor",
-    ]
-
-    # Get a sample output copied and manually process that
-    filtered_list = [text for text in list if text not in common_keywords]
-
-    return filtered_list
+def add_to_data(names, contents, data, category, group_name):
+    """After receiving scrapped data, process it"""
+    for i in range(len(names)):
+        content_text = ""
+        for entry in contents[i]:
+            content_text += entry + "\n"
+        data_entry = {
+            "name": names[i][0],
+            "group_name": group_name,
+            "source": category,
+            "content": content_text
+        }
+        for key, val in data_entry.items():
+            data[key].append(val)
+    names.clear()
+    contents.clear()
