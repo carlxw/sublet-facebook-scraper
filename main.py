@@ -45,7 +45,7 @@ def main():
     for url_entry in FB_GROUP_URLS:
         for group_name, link in url_entry.items():
             # Add corresponding URL leading to discussions page
-            # url_entry[group_name].append(f"{link[0]}buy_sell_discussion/")
+            url_entry[group_name].append(f"{link[0]}buy_sell_discussion/")
             for url in link:
                 isBuyAndSell = False if "buy_sell_discussion" in url else True
                 change_url(driver, f"{url}?sorting_setting=CHRONOLOGICAL_LISTINGS" if isBuyAndSell else url)
