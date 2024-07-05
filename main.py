@@ -53,7 +53,31 @@ CHART_DATA = {
 }
 
 
-NUMBER_OF_SCROLLS = 1
+NUMBER_OF_SCROLLS = 3
+
+
+def scrape(post, names, contents, profiles):
+    filter_list = [None, " ", "No Content found"]
+    name = post.find("span", {"class": NAME_CLASS}, recursive=True)
+    if name is not None:
+        name = name.find_all(string=True)
+    content = post.find("span", {"class": CONTENT_CLASS}, recursive=True)
+    if content is not None:
+        content = content.find_all(string=True)
+    if content not in filter_list and name not in filter_list: 
+        names.append(name)
+        contents.append(content)
+        profile = post.find("a", {"class": FACEBOOK_PROFILE_CLASS}, recursive=True)
+        if profile is not None:
+            profile = profile.get("href")
+            profiles.append(profile)
+        else:
+            profiles.append("")
+    else:
+        if content not in filter_list and name in filter_list:
+            names.append("UNKNOWN")
+            contents.append(content)
+            profiles.append("")
 
 
 # https://medium.com/elnkart/facebook-login-using-selenium-python-bd28d2cb3740
@@ -63,41 +87,21 @@ def main():
             for url in link.values():
                 isBuyAndSell = False if "buy_sell_discussion" in url else True
                 change_url(driver, f"{url}?sorting_setting=CHRONOLOGICAL_LISTINGS" if isBuyAndSell else f"{url}?sorting_setting=RECENT_ACTIVITY")
-                scroll_to_bottom(driver, NUMBER_OF_SCROLLS)
-                html = driver.page_source
-                soup = BeautifulSoup(html, "html.parser")
-                posts = soup.findAll("div", {"class": FEED_CLASS})
-                names, contents, profiles = [], [], []
-                filter_list = [None, " ", "No Content found"]
-                for post in posts:
-                    print(post.find_all(string=True, recursive=False))
-                    print("========================")
-                    print(post.find_all(string=True, recursive=True))
-                    # Find the post's OP and content
-                    name = post.find("span", {"class": NAME_CLASS}, recursive=True)
-                    if name is not None:
-                        name = name.find_all(string=True)
-                    content = post.find("span", {"class": CONTENT_CLASS}, recursive=True)
-                    if content is not None:
-                        content = content.find_all(string=True)
-                    if content not in filter_list and name not in filter_list: 
-                        names.append(name)
-                        contents.append(content)
-                        # Find the user profile URL
-                        profile = post.find_all("a", {"class": FACEBOOK_PROFILE_CLASS}, recursive=True)
-                        if profile is not None:
-                            profile = profile.get("href")
-                            profiles.append(profile)
-                        else:
-                            profiles.append("")
-                    else:
-                        if content not in filter_list and name in filter_list:
-                            names.append("UNKNOWN")
-                            contents.append(content)
-                            profiles.append("")
 
-                category = "Buy and Sell" if isBuyAndSell else "Discussion"
-                add_to_data(names, contents, profiles, CHART_DATA, category, group_name)
+                for _ in range(NUMBER_OF_SCROLLS):
+                    names, contents, profiles = [], [], []
+                    soup = BeautifulSoup(driver.page_source, "html.parser")
+                    posts = soup.findAll("div", {"class": FEED_CLASS})
+                    
+                    for post in posts:
+                        print(post.find_all(string=True, recursive=False))
+                        print("========================")
+                        print(post.find_all(string=True, recursive=True))
+                        scrape(post, names, contents, profiles)
+                        scroll_to_bottom(driver, 2)
+
+                    category = "Buy and Sell" if isBuyAndSell else "Discussion"
+                    add_to_data(names, contents, profiles, CHART_DATA, category, group_name)
 
     # Write the data to an Excel Spreadsheet
     generate_excel_file(["Seller Name", "Group", "Category", "Post Contents"], CHART_DATA)
