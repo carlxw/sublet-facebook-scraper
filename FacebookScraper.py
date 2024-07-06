@@ -2,6 +2,7 @@ import time
 from time import gmtime, strftime
 import xlsxwriter
 
+
 def change_url(driver, link, delay_time = 3):
     """Change the URL with a timer to suspend the thread"""
     driver.get(link)
