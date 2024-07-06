@@ -8,10 +8,10 @@ def change_url(driver, link, delay_time = 3):
     time.sleep(delay_time)
 
 
-def scroll_to_bottom(driver, num_scrolls, delay_time = 3):
+def scroll_to_bottom(driver, num_scrolls, delay_time = 3, scroll_value = 1.175):
     """Scroll to the bottom of the page 'n' times"""
     for _ in range(num_scrolls):
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+        driver.execute_script(f"window.scrollTo(0, (document.body.scrollHeight)/{scroll_value})")
         time.sleep(delay_time)
 
 
