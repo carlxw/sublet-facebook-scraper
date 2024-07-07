@@ -47,7 +47,7 @@ CHART_DATA = {
 
 FEED_CLASS = "x1yztbdb x1n2onr6 xh8yej3 x1ja2u2z"
 NUMBER_OF_SCROLLS = 5
-FOUND_POSTS = set()
+FOUND_POSTS = set([])
 
 
 # https://medium.com/elnkart/facebook-login-using-selenium-python-bd28d2cb3740
