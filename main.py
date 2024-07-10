@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 
 options = webdriver.ChromeOptions()
 options.add_argument("--disable-notifications")
-options.add_argument("--user-data-dir=C:\\Users\\carlw\\AppData\\Local\\Google\\Chrome\\User Data")
+# options.add_argument("--user-data-dir=C:\\Users\\carlw\\AppData\\Local\\Google\\Chrome\\User Data")
+options.add_argument("--user-data-dir=/Users/carlw/Library/Application Support/Google/Chrome")
 options.add_argument("--profile-directory=Default")
 options.add_argument("--remote-debugging-pipe")
 driver = webdriver.Chrome(options=options)
