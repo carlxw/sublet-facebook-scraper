@@ -1,41 +1,19 @@
 from selenium import webdriver
-from time import gmtime, strftime
 from FacebookScraper import *
 from bs4 import BeautifulSoup
-
+import json
+config = json.load(open("config.json"))
 
 options = webdriver.ChromeOptions()
 options.add_argument("--disable-notifications")
-# options.add_argument("--user-data-dir=C:\\Users\\carlw\\AppData\\Local\\Google\\Chrome\\User Data")
-options.add_argument("--user-data-dir=/Users/carlw/Library/Application Support/Google/Chrome")
+# options.add_argument(f"--user-data-dir={config["chrome_userdata_dir"]["macos"]}")
+options.add_argument(f"--user-data-dir={config["chrome_userdata_dir"]["windows"]}")
 options.add_argument("--profile-directory=Default")
 options.add_argument("--remote-debugging-pipe")
 driver = webdriver.Chrome(options=options)
 driver.maximize_window()
 
-
-FB_GROUP_URLS = [
-    {"Rez One/ICON - Student Housing In Waterloo": {
-        "buy_and_sell": "https://www.facebook.com/groups/3428997217345482/",
-        "discussion": "https://www.facebook.com/groups/3428997217345482/buy_sell_discussion"
-    }},
-    {"Student Housing in Waterloo": {
-        "buy_and_sell": "https://www.facebook.com/groups/1998166543836067/",
-        "discussion": "https://www.facebook.com/groups/1998166543836067/buy_sell_discussion"
-    }},
-    {"Rez-One sublets - Student Housing Waterloo": {
-        "buy_and_sell": "https://www.facebook.com/groups/855632539122696/",
-        "discussion": "https://www.facebook.com/groups/855632539122696/buy_sell_discussion"
-    }},
-    {"Waterloo Student Housing": {
-        "discussion": "https://www.facebook.com/groups/664699027351008/"
-    }},
-    {"UW/WLU 4 Month Subletting": {
-        "buy_and_sell": "https://www.facebook.com/groups/WaterlooSublet/",
-        "discussion": "https://www.facebook.com/groups/WaterlooSublet/buy_sell_discussion"
-    }},
-]
-
+FB_GROUP_URLS = config["urls_to_scrape"]
 
 CHART_DATA = {
     "name": [],
@@ -45,8 +23,7 @@ CHART_DATA = {
     "content": [],
 }
 
-
-FEED_CLASS = "x1yztbdb x1n2onr6 xh8yej3 x1ja2u2z"
+FEED_CLASS = config["classes"]["feed_class"]
 NUMBER_OF_SCROLLS = 5
 FOUND_POSTS = set([])
 

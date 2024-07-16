@@ -1,0 +1,33 @@
+{
+    // Finish these paths excluding the profile name
+    "chrome_userdata_dir": {
+        "windows": "",
+        "macos": ""
+    },
+    // Populate the URLS
+    "urls_to_scrape": [
+        {"face_group_name": {
+            "buy_and_sell": "",
+            "discussion": ""
+        }},
+        {"face_group_name": {
+            "buy_and_sell": "",
+            "discussion": ""
+        }},
+        {"face_group_name": {
+            "buy_and_sell": "",
+            "discussion": ""
+        }},
+        {"face_group_name": {
+            "buy_and_sell": "",
+            "discussion": ""
+        }}
+    ],
+    // Populate these values using browser's inspect element
+    "classes": {
+        "feed_class": "",
+        "name_class": "",
+        "content_class": "",
+        "facebook_profile_class": ""
+    }
+}
