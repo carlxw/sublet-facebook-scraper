@@ -15,7 +15,7 @@
 1. Make a copy of `config.txt` and rename it to `config.json`
 1. Follow the instructions inside of the copied `config.json` and populate the empty values
 1. Close all instances of Chrome (prior to running this script; assuming one is signed into Facebook)
-1. Install `pip` packages
+1. Create a Python venv (recommended) and install `pip` packages
 1. Start the scraper by running:
 ```
 python3 main.py
