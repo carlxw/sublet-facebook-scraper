@@ -28,7 +28,6 @@ NUMBER_OF_SCROLLS = 5
 FOUND_POSTS = set([])
 
 
-# https://medium.com/elnkart/facebook-login-using-selenium-python-bd28d2cb3740
 def main():  
     for url_entry in FB_GROUP_URLS:
         for group_name, link in url_entry.items():
