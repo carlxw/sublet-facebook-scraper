@@ -20,3 +20,8 @@
 ```
 python3 main.py
 ```
+
+## Disclaimer
+By using this web scraper, you acknowledge that I am not liable for any damages such as, and not limiting to:
+* Having your account being permanently suspended by Facebook
+* Losing all of your browser data/configuration
